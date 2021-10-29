@@ -114,7 +114,8 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 	
 	// TODO: Fill in this function
 	int s = cloud->points.size();
-	for(int i = 0; i<maxIterations; i++){		
+	for(int i = 0; i<maxIterations; i++){	
+        // std::cout << cloud->points.size() << std::endl;
 		int index1 = rand() % cloud->points.size();
 		int index2 = rand() % cloud->points.size();
 		while(index1 == index2){
@@ -124,7 +125,7 @@ std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT
 		while(index3 == index1 || index3 == index2){
 			index3 = rand() % cloud->points.size();
 		}
-
+        
 		float x1 = cloud->points[index1].x;
 		float y1 = cloud->points[index1].y;
 		float z1 = cloud->points[index1].z;
@@ -278,7 +279,6 @@ typename pcl::PointCloud<PointT>::Ptr ProcessPointClouds<PointT>::loadPcd(std::s
 template<typename PointT>
 std::vector<boost::filesystem::path> ProcessPointClouds<PointT>::streamPcd(std::string dataPath)
 {
-
     std::vector<boost::filesystem::path> paths(boost::filesystem::directory_iterator{dataPath}, boost::filesystem::directory_iterator{});
 
     // sort files in accending order so playback is chronological
