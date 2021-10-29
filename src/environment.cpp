@@ -87,27 +87,27 @@ void cityBlock(pcl::visualization::PCLVisualizer::Ptr& viewer){
     pcl::PointCloud<pcl::PointXYZI>::Ptr filterCloud = pointProcessorI->FilterCloud(inputCloud, filterRes , minPoint, maxPoint);
     // renderPointCloud(viewer,filterCloud,"filterCloud");
 
-    // std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZ>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(inputCloud, 100, 0.2);
-    // renderPointCloud(viewer,segmentCloud.first,"obstCloud",Color(1,0,0));
-    // renderPointCloud(viewer,segmentCloud.second,"planeCloud",Color(0,1,0));
+    std::pair<pcl::PointCloud<pcl::PointXYZI>::Ptr, pcl::PointCloud<pcl::PointXYZI>::Ptr> segmentCloud = pointProcessorI->SegmentPlane(filterCloud, 100, 0.2);
+    renderPointCloud(viewer,segmentCloud.first,"obstCloud",Color(1,0,0));
+    renderPointCloud(viewer,segmentCloud.second,"planeCloud",Color(0,1,0));
 
-    // std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->myClustering(segmentCloud.first, 1.0, 3, 30);
+    std::vector<pcl::PointCloud<pcl::PointXYZI>::Ptr> cloudClusters = pointProcessorI->myClustering(segmentCloud.first, 1, 8, 300);
 
-    // int clusterId = 0;
-    // std::vector<Color> colors = {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
+    int clusterId = 0;
+    std::vector<Color> colors = {Color(1,0,0), Color(0,1,0), Color(0,0,1)};
 
-    // for(pcl::PointCloud<pcl::PointXYZI>::Ptr cluster : cloudClusters)
-    // {
-    //     std::cout << "cluster size ";
-    //     pointProcessorI->numPoints(cluster);
-    //     renderPointCloud(viewer,cluster,"obstCloud"+std::to_string(clusterId),colors[clusterId]);
+    for(pcl::PointCloud<pcl::PointXYZI>::Ptr cluster : cloudClusters)
+    {
+        std::cout << "cluster size ";
+        pointProcessorI->numPoints(cluster);
+        renderPointCloud(viewer,cluster,"obstCloud"+std::to_string(clusterId),colors[clusterId]);
         
-    //     //Box box = pp_obj.BoundingBox(cluster);
-    //     //renderBox(viewer,box,clusterId);
+        Box box = pointProcessorI->BoundingBox(cluster);
+        renderBox(viewer,box,clusterId);
 
-    //     ++clusterId;
+        ++clusterId;
 
-    // }
+    }
 
 }
 //setAngle: SWITCH CAMERA ANGLE {XY, TopDown, Side, FPS}
