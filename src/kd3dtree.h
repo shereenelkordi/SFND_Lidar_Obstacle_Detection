@@ -65,22 +65,30 @@ struct KdTree
 			float right_boundary = target[0] + distanceTol;
 			float upper_boundary = target[1] + distanceTol;
 			float lower_boundary = target[1] - distanceTol;
+			float bottom_boundary = target[2] - distanceTol;
+			float top_boundary = target[2] + distanceTol;
 			float x = node-> point[0];
 			float y = node-> point[1];
-			if((x >= left_boundary && x <= right_boundary)&&(y >= lower_boundary && y <= upper_boundary)){
-				float distance = sqrt((x - target[0])*(x - target[0])+(y - target[1])*(y - target[1]));
+			float z = node->point[2];
+			if((x >= left_boundary && x <= right_boundary)
+				&&(y >= lower_boundary && y <= upper_boundary)
+				&&(z >= bottom_boundary && z <= top_boundary)){
+				float distance = sqrt((x - target[0])*(x - target[0])+(y - target[1])*(y - target[1])+(z - target[2])*(z - target[2]));
 				if(distance <= distanceTol){
 					ids.push_back(node->id);
 				}
 			}
 
-			int level = depth%2;
+			int level = depth%3;
 			if(level == 0){
 				if(left_boundary < x) searchHelper(target, node->left, depth+1, distanceTol, ids);
 				if(right_boundary > x) searchHelper(target, node->right, depth+1, distanceTol, ids);
-			}else{
+			}else if(level == 1){
 				if(lower_boundary < y) searchHelper(target, node->left, depth+1, distanceTol, ids);
 				if(upper_boundary > y) searchHelper(target, node->right, depth+1, distanceTol, ids);
+			}else{
+				if(bottom_boundary < z) searchHelper(target, node->left, depth+1, distanceTol, ids);
+				if(top_boundary > z) searchHelper(target, node->right, depth+1, distanceTol, ids);
 			}	
 		}
 	}

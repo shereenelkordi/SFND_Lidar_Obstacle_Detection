@@ -9,8 +9,6 @@ private:
   std::vector<bool> processed;
   std::vector<typename pcl::PointCloud<PointT>::Ptr> clusters;
 
-  // std::vector<std::vector<int>> clusters;
-
 public:
     Cluster3dExtension(int points_size) :
       size(points_size) {
@@ -46,7 +44,7 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> Cluster3dExtension<PointT>::e
     std::vector<std::vector<float>> points;
     for(int i = 0; i<cloud->points.size(); i++){
         std::vector<float> pointVec {cloud->points[i].x, cloud->points[i].y, cloud->points[i].z}; 
-    	tree->insert(pointVec,i);
+    	  tree->insert(pointVec,i);
         points.push_back(pointVec);
     }        
     
@@ -56,18 +54,19 @@ std::vector<typename pcl::PointCloud<PointT>::Ptr> Cluster3dExtension<PointT>::e
 		if(!processed[i]){
 			processed[i] = true;
 			std::vector<int> cluster_indices;
-            typename pcl::PointCloud<PointT>::Ptr cloudCluster(new pcl::PointCloud<PointT>);
+      typename pcl::PointCloud<PointT>::Ptr cloudCluster(new pcl::PointCloud<PointT>);
 			proximity(i, cluster_indices, points, tree, distanceTol);
-            if(cluster_indices.size() >= minSize && cluster_indices.size()<= maxSize){
-                for (int j=0; j<cluster_indices.size(); j++) {
-                    cloudCluster->points.push_back(cloud->points[cluster_indices[j]]);
-                }
+      if(cluster_indices.size() >= minSize && cluster_indices.size()<= maxSize){
+          for (int j=0; j<cluster_indices.size(); j++) {
+              cloudCluster->points.push_back(cloud->points[cluster_indices[j]]);
+          }
 
-                cloudCluster->width = cloudCluster->points.size();
-                cloudCluster->height = 1;
+          cloudCluster->width = cloudCluster->points.size();
+          cloudCluster->is_dense = true;
+          cloudCluster->height = 1;
 
-                clusters.push_back(cloudCluster);
-            }
+          clusters.push_back(cloudCluster);
+      }
 		}
 		i++;
 	}
